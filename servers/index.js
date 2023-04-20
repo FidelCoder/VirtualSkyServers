@@ -1,4 +1,6 @@
 const Interest = require('./models/Interest');
+const UserModel = require('./models/userModel');
+
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -53,3 +55,67 @@ app.post('/api/interests', async (req, res) => {
     }
   });
   
+
+
+  //UserReg
+  app.post('/signup', async (req, res) => {
+    console.log('Request body:', req.body); // Add this line to log the incoming data
+    try {
+      const { email, password, fullname, username, date_of_birth, location } = req.body;
+  
+      if (!email || !password || !fullname || !username || !date_of_birth || !location) {
+        return res.status(400).json({ message: 'All fields are required.' });
+      }
+  
+      const existingUser = await UserModel.findOne({ email });
+      if (existingUser) {
+        return res.status(409).json({ message: 'Email is already in use. Griffins' });
+      }
+  
+      const newUser = new UserModel({
+        email,
+        password, // Make sure to hash the password before saving it to the database
+        fullname,
+        username,
+        date_of_birth,
+        location,
+      });
+  
+      await newUser.save();
+      res.status(201).json({ message: 'User created successfully.', user: newUser });
+    } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ message: 'Error creating user.' });
+    }
+  });
+  
+//fetching  userdata after Authentication
+// Fetch user data by ID
+
+
+//profile
+// Fetch user data by ID
+app.get('/api/users/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+    }
+
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Remove the password field from the response
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+
+    res.status(200).json(userWithoutPassword);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: 'Error fetching user data.' });
+  }
+});
