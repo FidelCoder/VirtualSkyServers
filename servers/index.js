@@ -169,3 +169,6 @@ app.get('/api/users/:userId', async (req, res) => {
     res.status(500).json({ message: 'Error fetching user data.' });
   }
 });
+
+
+module.exports = app;
