@@ -36,7 +36,7 @@ db.once('open', () => console.log('Connected to MongoDB'));
 
 // Routes
 app.get('/', (req, res) => {
-  res.send('Hello from Express server!');
+  res.send('VirtualSky Servers working ');
 });
 
 // Start the server
