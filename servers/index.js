@@ -15,7 +15,13 @@ const app = express();
 app.use(express.json());
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'https://virtual-sky.vercel.app',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions));
+//app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
