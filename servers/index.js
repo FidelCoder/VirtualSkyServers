@@ -21,7 +21,7 @@ const app = express();
 
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app/'];
+    const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app'];
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -29,10 +29,12 @@ const corsOptions = {
     }
   },
   optionsSuccessStatus: 200,
+  credentials: true,
 };
 
+
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// app.options('*', cors(corsOptions));
 app.use(express.json());
 
 
