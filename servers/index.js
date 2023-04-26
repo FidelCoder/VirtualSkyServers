@@ -1,3 +1,10 @@
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Add this line to handle OPTIONS requests
+app.options('*', cors(corsOptions));
+
+
 const Interest = require('./models/Interest');
 const UserModel = require('./models/userModel');
 
@@ -12,7 +19,6 @@ const jwt = require('jsonwebtoken');
 dotenv.config();
 const app = express();
 
-app.use(express.json());
 
 // Middleware
 const corsOptions = {
@@ -21,10 +27,6 @@ const corsOptions = {
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
   allowedHeaders: ['Virtualsky', 'Astro']
 }
-
-app.use(cors(corsOptions));
-//app.use(cors());
-app.use(express.json());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
