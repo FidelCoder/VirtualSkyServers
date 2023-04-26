@@ -1,5 +1,4 @@
 app.use(cors(corsOptions));
-app.use(express.json());
 
 // Add this line to handle OPTIONS requests
 app.options('*', cors(corsOptions));
@@ -21,12 +20,9 @@ const app = express();
 
 
 // Middleware
-const corsOptions = {
-  origin: 'https://virtual-sky.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  optionsSuccessStatus: 200,
-  allowedHeaders: ['Content-Type', 'Authorization', 'Virtualsky', 'Astro']
-}
+app.use(cors()); // Update this line
+app.use(express.json());
+
 
 
 // Connect to MongoDB
