@@ -24,9 +24,10 @@ const app = express();
 const corsOptions = {
   origin: 'https://virtual-sky.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  allowedHeaders: ['Virtualsky', 'Astro']
+  optionsSuccessStatus: 200,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Virtualsky', 'Astro']
 }
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
