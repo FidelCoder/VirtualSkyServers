@@ -1,7 +1,7 @@
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-// Add this line to handle OPTIONS requests
-app.options('*', cors(corsOptions));
+// // Add this line to handle OPTIONS requests
+// app.options('*', cors(corsOptions));
 
 
 const Interest = require('./models/Interest');
@@ -19,8 +19,20 @@ dotenv.config();
 const app = express();
 
 
-// Middleware
-app.use(cors()); // Update this line
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app/'];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 
