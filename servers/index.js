@@ -17,7 +17,9 @@ app.use(express.json());
 // Middleware
 const corsOptions = {
   origin: 'https://virtual-sky.vercel.app',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  allowedHeaders: ['Virtualsky', 'Astro']
 }
 
 app.use(cors(corsOptions));
