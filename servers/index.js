@@ -38,23 +38,23 @@ const app = express();
 // };
 
 // Create a middleware function to set CORS headers
-const corsMiddleware = (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://virtual-sky.vercel.app, https://virtual-sky-servers-dkix.vercel.app');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, OPTIONS'
-  );
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+// const corsMiddleware = (req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://virtual-sky.vercel.app, https://virtual-sky-servers-dkix.vercel.app');
+//   res.setHeader(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+//   );
+//   res.setHeader(
+//     'Access-Control-Allow-Methods',
+//     'GET, POST, PUT, DELETE, OPTIONS'
+//   );
+//   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  next();
-};
+//   next();
+// };
 
-// Use the middleware in your app
-app.use(corsMiddleware);
+// // Use the middleware in your app
+// app.use(corsMiddleware);
 
 
 
