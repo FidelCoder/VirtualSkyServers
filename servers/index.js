@@ -21,7 +21,12 @@ const app = express();
 
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app'];
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://virtual-sky.vercel.app',
+      'https://virtual-sky-servers-dkix.vercel.app',
+    ];
+    
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);  
     } else {
