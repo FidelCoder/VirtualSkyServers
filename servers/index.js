@@ -9,7 +9,7 @@ const UserModel = require('./models/userModel');
 
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+//const cors = require('cors');
 const dotenv = require('dotenv');
 
 const bcrypt = require('bcrypt');
@@ -39,7 +39,7 @@ const app = express();
 
 // Create a middleware function to set CORS headers
 const corsMiddleware = (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Replace '*' with your allowed origins
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000, https://virtual-sky.vercel.app, https://virtual-sky-servers-dkix.vercel.app');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
