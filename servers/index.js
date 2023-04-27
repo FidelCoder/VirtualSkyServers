@@ -19,21 +19,30 @@ dotenv.config();
 const app = express();
 
 
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app'];
+//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);  
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   optionsSuccessStatus: 200,
+//   credentials: true,
+// };
+
+
+// app.use(cors(corsOptions));
+
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:3000', 'https://virtual-sky.vercel.app'];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: '*',
   optionsSuccessStatus: 200,
   credentials: true,
 };
 
-
 app.use(cors(corsOptions));
+
 // app.options('*', cors(corsOptions));
 app.use(express.json());
 
@@ -60,7 +69,8 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Interests
+// Interests Post
+// Interests Post
 app.post('/api/users/:userId/interests', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -74,12 +84,42 @@ app.post('/api/users/:userId/interests', async (req, res) => {
       interests.map((interest) => ({ interest, userId }))
     );
 
-    res.status(201).json({ interests: newInterests });
+    // Fetch the updated user with the username and interests fields
+    const updatedUser = await UserModel.findById(userId).select('username interests');
+
+    res.status(201).json({ interests: newInterests, user: updatedUser });
   } catch (error) {
     console.error('Error saving interests:', error);
     res.status(500).json({ message: 'Error saving interests.' });
   }
 });
+
+
+// Interests Get
+// Interests Get by User ID
+app.get('/api/users/:userId/interests', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+    }
+
+    const interests = await Interest.find({ userId });
+
+    if (!interests) {
+      return res.status(404).json({ message: 'Interests not found.' });
+    }
+
+    res.status(200).json(interests);
+  } catch (error) {
+    console.error('Error fetching interests data:', error);
+    res.status(500).json({ message: 'Error fetching interests data.' });
+  }
+});
+
+
+
 
   //UserReg
   app.post('/signup', async (req, res) => {
@@ -169,6 +209,10 @@ app.post('/login', async (req, res) => {
 });
 
 //Fetch data from db
+// function isValidObjectId(value) {
+//   return mongoose.Types.ObjectId.isValid(value);
+// }
+
 app.get('/api/users/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
