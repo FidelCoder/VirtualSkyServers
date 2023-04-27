@@ -19,23 +19,43 @@ dotenv.config();
 const app = express();
 
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'https://virtual-sky.vercel.app',
-      'https://virtual-sky-servers-dkix.vercel.app',
-    ];
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       'http://localhost:3000',
+//       'https://virtual-sky.vercel.app',
+//       'https://virtual-sky-servers-dkix.vercel.app',
+//     ];
     
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);  
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  optionsSuccessStatus: 200,
-  credentials: true,
+//     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);  
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   optionsSuccessStatus: 200,
+//   credentials: true,
+// };
+
+// Create a middleware function to set CORS headers
+const corsMiddleware = (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Replace '*' with your allowed origins
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS'
+  );
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  next();
 };
+
+// Use the middleware in your app
+app.use(corsMiddleware);
+
 
 
 // app.use(cors(corsOptions));
