@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   date_of_birth: Date,
   location: String,
-  interests: [String]
+  interests: [String],
 });
 
 module.exports = mongoose.model('User', userSchema);

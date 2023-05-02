@@ -1,4 +1,8 @@
 // app.use(cors(corsOptions));
+const cors = require('cors');
+////////////////////////////////
+const { getSunSign, getChineseZodiac } = require('./astrology');
+const AstrologyData = require('./models/astrologyData');
 
 // // Add this line to handle OPTIONS requests
 // app.options('*', cors(corsOptions));
@@ -17,6 +21,26 @@ const jwt = require('jsonwebtoken');
 
 dotenv.config();
 const app = express();
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://virtual-sky.vercel.app',
+  'https://virtual-sky-servers-dkix.vercel.app',
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 
 // const corsOptions = {
@@ -53,7 +77,7 @@ const app = express();
 //   next();
 // };
 
-// // Use the middleware in your app
+// // // Use the middleware in your app
 // app.use(corsMiddleware);
 
 
@@ -66,7 +90,7 @@ const app = express();
 //   credentials: true,
 // };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // app.options('*', cors(corsOptions));
 app.use(express.json());
@@ -93,6 +117,40 @@ app.get('/', (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+///////////////////////////////////////////////////////////////////////
+// Make sure to use the middleware for parsing JSON body
+// Save astrology data
+app.post('/api/saveAstrologyData', async (req, res) => {
+  const { userId, day, month, year } = req.body;
+
+  const sunSign = getSunSign(day, month);
+  const chineseZodiac = getChineseZodiac(year);
+
+  const astrologyData = new AstrologyData({
+    user: userId,
+    sunSign,
+    chineseZodiac,
+  });
+
+  try {
+    await astrologyData.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch astrology data
+app.get('/api/getAstrologyData/:userId', async (req, res) => {
+  try {
+    const astrologyData = await AstrologyData.findOne({ user: req.params.userId });
+    res.json(astrologyData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Interests Post
 // Interests Post
