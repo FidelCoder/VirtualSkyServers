@@ -119,6 +119,41 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 ///////////////////////////////////////////////////////////////////////
+//const jwt = require('jsonwebtoken');
+
+const authMiddleware = (req, res, next) => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your_jwt_secret_key');
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid token.' });
+  }
+};
+
+////////////////////////////////////////////////////////////////////////
+const Course = require('./models/courses');
+app.post('/courses', authMiddleware, async (req, res) => {
+  const { title } = req.body;
+  const userId = req.user.userId; // Get the user ID from the decoded JWT token
+
+  const newCourse = new Course({ title, userId });
+
+  try {
+    const savedCourse = await newCourse.save();
+    res.status(201).json(savedCourse);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
 // Make sure to use the middleware for parsing JSON body
 // Save astrology data
 app.post('/api/saveAstrologyData', async (req, res) => {
@@ -318,6 +353,44 @@ app.get('/api/users/:userId', async (req, res) => {
     console.error('Error fetching user data:', error);
     res.status(500).json({ message: 'Error fetching user data.' });
   }
+});
+
+
+//Generate courses
+const axios = require('axios');
+
+app.post('/generateCourses', async (req, res) => {
+  const { interests, token } = req.body;
+
+  try {
+    // Replace with your actual API key
+    const apiKey = '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';
+    const url = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
+
+    const response = await axios.post(
+      url,
+      {
+        prompt: `Generate a list of courses related to ${interests.join(', ')}`,
+        max_tokens: 100,
+        n: 5,
+        stop: null,
+        temperature: 0.7,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    const courses = response.data.choices.map((choice) => choice.text);
+    res.status(200).json({ courses });
+  } catch (error) {
+    console.error('Error generating courses:', error.response.data);
+    res.status(500).json({ message: 'Error generating courses.' });
+  }
+  
 });
 
 
