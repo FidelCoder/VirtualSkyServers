@@ -364,7 +364,7 @@ app.post('/generateCourses', async (req, res) => {
 
   try {
     // Replace with your actual API key
-    const apiKey = '';
+    const apiKey = 'Replace with your API Key';
     const url = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
 
     const response = await axios.post(
@@ -422,6 +422,41 @@ app.get('/fetchCourses', async (req, res) => {
     res.status(500).json({ message: 'Error fetching courses.' });
   }
 });
+
+/////////////////////////////////////////////////////////////////////
+//Email scheduler to send users email time and again on their astrology data
+// Email scheduler to send users email time and again on their astrology data
+const emailScheduler = require('./emailScheduler');
+
+const getUsers = async () => {
+  try {
+    const users = await UserModel.find({}, { username: 1, location: 1, dateOfBirth: 1, email: 1 }); // Fetch required fields only
+    return users;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+};
+
+const startServer = async () => {
+  const users = await getUsers();
+  //emailScheduler.scheduleWeeklyHoroscopeEmails(users);
+  emailScheduler.scheduleHoroscopeEmails(users);
+
+};
+
+(async () => {
+  await startServer();
+
+  // ... start the server
+  app.listen(5001, () => {
+    console.log('Server started on port 5001');
+  });
+})();
+
+
+
+
 
 
 module.exports = app;
