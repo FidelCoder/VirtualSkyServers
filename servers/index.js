@@ -364,7 +364,7 @@ app.post('/generateCourses', async (req, res) => {
 
   try {
     // Replace with your actual API key
-    const apiKey = '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';
+    const apiKey = '';
     const url = 'https://api.openai.com/v1/engines/text-davinci-002/completions';
 
     const response = await axios.post(
@@ -389,8 +389,38 @@ app.post('/generateCourses', async (req, res) => {
   } catch (error) {
     console.error('Error generating courses:', error.response.data);
     res.status(500).json({ message: 'Error generating courses.' });
-  }
+  }  
   
+});
+
+////////////////////////////////////////////////////////////////////////////
+//generated courses
+app.post('/saveCourses', async (req, res) => {
+  const { courses, userId } = req.body;
+
+  try {
+    // Add the userId to each course before saving
+    const coursesWithUserId = courses.map((course) => ({ ...course, userId }));
+
+    const savedCourses = await Course.insertMany(coursesWithUserId);
+    res.status(200).json({ message: 'Courses saved successfully.', savedCourses });
+  } catch (error) {
+    console.error('Error saving courses:', error);
+    res.status(500).json({ message: 'Error saving courses.' });
+  }
+});
+//////////////////////////////////////////////////////////////////
+//API that fetches courses for specific users
+app.get('/fetchCourses', async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const courses = await Course.find({ userId });
+    res.status(200).json({ courses });
+  } catch (error) {
+    console.error('Error fetching courses:', error);
+    res.status(500).json({ message: 'Error fetching courses.' });
+  }
 });
 
 
